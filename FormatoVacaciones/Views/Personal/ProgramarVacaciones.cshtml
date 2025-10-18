@@ -1,0 +1,1433 @@
+﻿@model FormatoVacaciones.Models.ViewModels.PeriodosVacacionesViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Solicitud de Vacaciones | CFE</title>
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<style>
+		:root {
+			--primary: #006341;
+			--primary-dark: #004C33;
+			--primary-light: #4D8C72;
+			--secondary: #FFD100;
+			--light: #FFFFFF;
+			--dark: #222222;
+			--gray: #6C757D;
+			--light-gray: #F8F9FA;
+			--border-radius: 8px;
+			--box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+			--transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+			--period-1-color: #006341;
+			--period-2-color: #2563EB;
+			--period-3-color: #DB2777;
+			--period-4-color: #CA8A04;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: 'Open Sans', sans-serif;
+			background-color: #f5f7fa;
+			color: var(--dark);
+			line-height: 1.7;
+			-webkit-font-smoothing: antialiased;
+			padding: 1rem;
+			position: relative;
+			min-height: 100vh;
+		}
+
+		.request-container {
+			max-width: 1200px;
+			margin: 0 auto;
+			background: var(--light);
+			border-radius: var(--border-radius);
+			box-shadow: var(--box-shadow);
+			overflow: hidden;
+			position: relative;
+		}
+
+		.request-header {
+			background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+			color: var(--light);
+			padding: 1.5rem 2rem;
+			position: relative;
+			overflow: hidden;
+		}
+
+			.request-header h1 {
+				font-family: 'Montserrat', sans-serif;
+				font-size: 1.8rem;
+				margin-bottom: 0.5rem;
+			}
+
+		.request-content {
+			padding: 1.5rem;
+			position: relative;
+		}
+
+		.section-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 1.5rem;
+			flex-wrap: wrap;
+			gap: 1rem;
+		}
+
+			.section-header h2 {
+				font-family: 'Montserrat', sans-serif;
+				color: var(--primary);
+				font-size: 1.5rem;
+				position: relative;
+			}
+
+				.section-header h2:after {
+					content: '';
+					position: absolute;
+					width: 40px;
+					height: 3px;
+					background-color: var(--secondary);
+					bottom: -10px;
+					left: 0;
+				}
+
+		.days-available {
+			background-color: var(--light-gray);
+			padding: 0.5rem 1rem;
+			border-radius: var(--border-radius);
+			font-weight: 600;
+			color: var(--primary);
+		}
+
+		.periods-grid {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1rem;
+			margin-bottom: 1.5rem;
+		}
+
+		.period-card {
+			background: var(--light);
+			border: 2px solid #ddd;
+			border-radius: var(--border-radius);
+			padding: 1rem;
+			text-align: center;
+			transition: var(--transition);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			min-height: 140px;
+			position: relative;
+		}
+
+			.period-card.locked {
+				cursor: not-allowed;
+				opacity: 0.7;
+			}
+
+			.period-card.available {
+				border: 2px dashed var(--primary-light);
+				cursor: pointer;
+			}
+
+				.period-card.available:hover {
+					border-color: var(--primary);
+					background-color: rgba(0, 99, 65, 0.05);
+					transform: translateY(-3px);
+					box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+				}
+
+			.period-card.inactive {
+				opacity: 0.6;
+				cursor: not-allowed;
+			}
+
+			.period-card .period-badge {
+				position: absolute;
+				top: 0;
+				right: 0;
+				background: var(--primary);
+				color: white;
+				width: 25px;
+				height: 25px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-weight: bold;
+				font-size: 0.8rem;
+				border-bottom-left-radius: 8px;
+			}
+
+			.period-card .status-indicator {
+				position: absolute;
+				top: 5px;
+				left: 5px;
+				font-size: 0.7rem;
+				padding: 0.2rem 0.5rem;
+				border-radius: 12px;
+				font-weight: 500;
+			}
+
+			.period-card .status-approved {
+				background-color: #d4edda;
+				color: #155724;
+			}
+
+			.period-card .status-pending {
+				background-color: #fff3cd;
+				color: #856404;
+			}
+
+			.period-card .status-disabled {
+				background-color: #f8f9fa;
+				color: #6c757d;
+				border: 1px solid #dee2e6;
+			}
+
+			.period-card i {
+				font-size: 1.5rem;
+				margin-bottom: 0.5rem;
+			}
+
+			.period-card.locked i {
+				color: #adb5bd;
+			}
+
+			.period-card.available i {
+				color: var(--primary-light);
+			}
+
+			.period-card.inactive i {
+				color: #ddd;
+			}
+
+			.period-card .period-title {
+				font-family: 'Montserrat', sans-serif;
+				font-weight: 600;
+				margin-bottom: 0.3rem;
+				font-size: 0.9rem;
+			}
+
+			.period-card .period-dates {
+				font-size: 0.8rem;
+				margin-bottom: 0.2rem;
+				color: var(--gray);
+			}
+
+			.period-card .period-days {
+				font-size: 0.75rem;
+				color: var(--primary);
+				font-weight: 600;
+				background-color: rgba(0, 99, 65, 0.1);
+				padding: 0.2rem 0.5rem;
+				border-radius: 12px;
+				margin-top: 0.3rem;
+				display: inline-block;
+			}
+
+			.period-card .period-replacement {
+				font-size: 0.7rem;
+				color: var(--primary);
+				font-weight: 500;
+				background-color: rgba(255, 209, 0, 0.1);
+				padding: 0.2rem 0.5rem;
+				border-radius: 12px;
+				margin-top: 0.3rem;
+				border: 1px dashed var(--secondary);
+			}
+
+			.period-card .period-description {
+				font-size: 0.7rem;
+				color: var(--gray);
+				margin-top: 0.3rem;
+				font-style: italic;
+			}
+
+		.calendar-section {
+			background: var(--light);
+			padding: 1rem;
+			border-radius: var(--border-radius);
+			box-shadow: var(--box-shadow);
+			margin-bottom: 1.5rem;
+			display: none;
+			transition: all 0.3s ease;
+		}
+
+		.calendar-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 1rem;
+			flex-wrap: wrap;
+			gap: 1rem;
+		}
+
+		.calendar-nav {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+
+		.calendar-nav-btn {
+			background: none;
+			border: none;
+			color: var(--primary);
+			cursor: pointer;
+			font-size: 1rem;
+			transition: var(--transition);
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background-color: rgba(0, 99, 65, 0.1);
+		}
+
+			.calendar-nav-btn:hover {
+				background-color: rgba(0, 99, 65, 0.2);
+			}
+
+		.calendar-month {
+			font-family: 'Montserrat', sans-serif;
+			font-size: 1rem;
+			font-weight: 500;
+			min-width: 100px;
+			text-align: center;
+			position: relative;
+		}
+
+		.year-selector {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+
+			.year-selector select {
+				padding: 0.3rem;
+				border-radius: 4px;
+				border: 1px solid #ddd;
+			}
+
+		.calendar-container {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 1rem;
+			max-height: 500px;
+			overflow-y: auto;
+			padding: 0.5rem;
+		}
+
+		.month-calendar {
+			border: 1px solid #eee;
+			border-radius: var(--border-radius);
+			padding: 0.5rem;
+			background: white;
+		}
+
+		.month-title {
+			text-align: center;
+			font-family: 'Montserrat', sans-serif;
+			font-weight: 600;
+			margin-bottom: 0.5rem;
+			color: var(--primary);
+			font-size: 0.9rem;
+			position: relative;
+		}
+
+		.month-grid {
+			display: grid;
+			grid-template-columns: repeat(7, 1fr);
+			gap: 0.2rem;
+		}
+
+		.month-day-header {
+			text-align: center;
+			font-family: 'Montserrat', sans-serif;
+			font-weight: 500;
+			font-size: 0.7rem;
+			color: var(--gray);
+			padding: 0.2rem;
+		}
+
+		.month-day {
+			text-align: center;
+			font-size: 0.7rem;
+			padding: 0.3rem;
+			border-radius: 50%;
+			cursor: pointer;
+			transition: var(--transition);
+			aspect-ratio: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+			.month-day:hover {
+				background-color: var(--light-gray);
+			}
+
+			.month-day.today {
+				border: 1px solid var(--primary);
+				font-weight: bold;
+			}
+
+			.month-day.selected {
+				background-color: var(--primary);
+				color: var(--light);
+				font-weight: bold;
+			}
+
+			.month-day.in-range {
+				background-color: rgba(0, 99, 65, 0.1);
+			}
+
+			.month-day.range-start {
+				background-color: var(--primary);
+				color: white;
+				font-weight: bold;
+			}
+
+			.month-day.range-end {
+				background-color: var(--primary);
+				color: white;
+				font-weight: bold;
+			}
+
+			.month-day.disabled {
+				color: #ccc;
+				text-decoration: line-through;
+				cursor: not-allowed;
+				background-color: #f9f9f9;
+			}
+
+			.month-day.weekend {
+				color: #ccc;
+				cursor: not-allowed;
+				background-color: #f9f9f9;
+			}
+
+			.month-day.period-1 {
+				background-color: rgba(0, 99, 65, 0.2);
+				color: var(--primary);
+				cursor: not-allowed;
+			}
+
+			.month-day.period-2 {
+				background-color: rgba(37, 99, 235, 0.2);
+				color: #2563EB;
+				cursor: not-allowed;
+			}
+
+			.month-day.period-3 {
+				background-color: rgba(219, 39, 119, 0.2);
+				color: #DB2777;
+				cursor: not-allowed;
+			}
+
+			.month-day.period-4 {
+				background-color: rgba(202, 138, 4, 0.2);
+				color: #CA8A04;
+				cursor: not-allowed;
+			}
+
+		.replacement-section {
+			background-color: var(--light-gray);
+			padding: 1rem;
+			border-radius: var(--border-radius);
+			margin-top: 1rem;
+			border: 1px solid #e9ecef;
+		}
+
+		.replacement-header {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			margin-bottom: 0.8rem;
+		}
+
+			.replacement-header i {
+				color: var(--primary);
+				font-size: 1.2rem;
+			}
+
+			.replacement-header h3 {
+				font-family: 'Montserrat', sans-serif;
+				font-size: 1rem;
+				color: var(--primary);
+				margin: 0;
+			}
+
+		.replacement-content {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+			flex-wrap: wrap;
+		}
+
+		.replacement-label {
+			font-weight: 600;
+			color: var(--dark);
+			font-size: 0.9rem;
+			white-space: nowrap;
+		}
+
+		.replacement-select {
+			padding: 0.5rem 0.75rem;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			font-size: 0.9rem;
+			background-color: white;
+			cursor: pointer;
+			transition: var(--transition);
+			min-width: 300px;
+			max-height: 150px;
+			overflow-y: auto;
+		}
+
+			.replacement-select:focus {
+				outline: none;
+				border-color: var(--primary);
+				box-shadow: 0 0 0 2px rgba(0, 99, 65, 0.1);
+			}
+
+			.replacement-select option {
+				padding: 0.5rem;
+				font-size: 0.9rem;
+				border-bottom: 1px solid #f0f0f0;
+			}
+
+				.replacement-select option:hover {
+					background-color: var(--primary-light);
+					color: white;
+				}
+
+		.calendar-actions {
+			display: flex;
+			justify-content: flex-end;
+			margin-top: 1rem;
+			align-items: center;
+			gap: 0.5rem;
+			flex-wrap: wrap;
+		}
+
+		.btn {
+			padding: 0.5rem 1rem;
+			border-radius: var(--border-radius);
+			font-family: 'Montserrat', sans-serif;
+			font-weight: 600;
+			cursor: pointer;
+			transition: var(--transition);
+			display: flex;
+			align-items: center;
+			gap: 0.3rem;
+			border: none;
+			font-size: 0.9rem;
+		}
+
+			.btn:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			}
+
+		.btn-cancel {
+			background-color: var(--light-gray);
+			color: var(--dark);
+			border: 1px solid #ddd;
+			text-decoration: none;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+			.btn-cancel:hover {
+				background-color: #e9ecef;
+			}
+
+		.btn-save {
+			background-color: var(--primary);
+			color: var(--light);
+		}
+
+			.btn-save:hover {
+				background-color: var(--primary-dark);
+			}
+
+		.days-summary {
+			background-color: var(--light-gray);
+			padding: 1rem;
+			border-radius: var(--border-radius);
+			margin-top: 1rem;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 1rem;
+		}
+
+		.days-info {
+			display: flex;
+			gap: 1.5rem;
+			flex-wrap: wrap;
+		}
+
+		.days-count {
+			font-family: 'Montserrat', sans-serif;
+			font-size: 0.9rem;
+			display: flex;
+			align-items: center;
+		}
+
+			.days-count span {
+				font-weight: bold;
+				color: var(--primary);
+				margin-left: 0.3rem;
+			}
+
+		.form-footer {
+			padding: 1rem 1.5rem;
+			background-color: var(--light-gray);
+			border-top: 1px solid #eee;
+			display: flex;
+			justify-content: flex-end;
+			gap: 0.5rem;
+			flex-wrap: wrap;
+		}
+
+		.error-message {
+			color: #dc3545;
+			font-size: 0.8rem;
+			margin-top: 0.5rem;
+			display: none;
+		}
+
+		.alert {
+			padding: 1rem;
+			margin-bottom: 1rem;
+			border-radius: var(--border-radius);
+		}
+
+		.alert-danger {
+			background-color: #f8d7da;
+			color: #721c24;
+			border: 1px solid #f5c6cb;
+		}
+
+			.alert-danger h4 {
+				margin-bottom: 0.5rem;
+				font-family: 'Montserrat', sans-serif;
+			}
+
+			.alert-danger ul {
+				margin-bottom: 0;
+				padding-left: 1.5rem;
+			}
+
+		@@media (max-width: 1024px) {
+			.calendar-container {
+				grid-template-columns: repeat(2, 1fr);
+			}
+		}
+
+		@@media (max-width: 768px) {
+			body {
+				padding: 0.5rem;
+			}
+
+			.request-content {
+				padding: 1rem;
+			}
+
+			.periods-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.section-header {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 0.5rem;
+			}
+
+			.days-info {
+				flex-direction: column;
+				gap: 0.5rem;
+			}
+
+			.calendar-actions {
+				flex-direction: column;
+				gap: 0.5rem;
+			}
+
+			.calendar-container {
+				grid-template-columns: 1fr;
+			}
+
+			.replacement-content {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 0.5rem;
+			}
+
+			.replacement-select {
+				min-width: 100%;
+				max-height: 120px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<form method="post" action="~/Personal/ProgramarVacaciones" id="vacationForm">
+		<!-- Campos ocultos para almacenar las fechas de los periodos -->
+		<input type="hidden" asp-for="APrimerPeriodoFechaInicio" id="fechaInicio1" />
+		<input type="hidden" asp-for="BPrimerPeriodoFechaFin" id="fechaFin1" />
+		<input type="hidden" asp-for="CPrimerPeriodoFechaInicio" id="fechaInicio2" />
+		<input type="hidden" asp-for="DPrimerPeriodoFechaFin" id="fechaFin2" />
+		<input type="hidden" asp-for="EPrimerPeriodoFechaInicio" id="fechaInicio3" />
+		<input type="hidden" asp-for="FPrimerPeriodoFechaFin" id="fechaFin3" />
+		<input type="hidden" asp-for="GPrimerPeriodoFechaInicio" id="fechaInicio4" />
+		<input type="hidden" asp-for="HPrimerPeriodoFechaFin" id="fechaFin4" />
+		<input type="hidden" asp-for="TotalDiasDisponibles" id="totalDias" />
+		<input type="hidden" asp-for="IdCubre1" id="nombrecubre1" />
+		<input type="hidden" asp-for="IdCubre2" id="nombrecubre2" />
+		<input type="hidden" asp-for="IdCubre3" id="nombrecubre3" />
+		<input type="hidden" asp-for="IdCubre4" id="nombrecubre4" />
+
+		<div class="request-container">
+			<div class="request-header">
+				<h1>Solicitud de Vacaciones</h1>
+				<p>Seleccione los periodos de vacaciones que desea solicitar</p>
+			</div>
+
+
+			@if (!ViewData.ModelState.IsValid)
+			{
+				<div class="alert alert-danger">
+					<h4>Errores de validación:</h4>
+					<ul>
+						@foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+						{
+							<li>@error.ErrorMessage</li>
+						}
+					</ul>
+				</div>
+			}
+
+			<div class="request-content">
+				<div class="section-header">
+					<h2>Seleccione Periodos</h2>
+					<div class="days-available">Días disponibles: <span id="remainingDays">@(Model.TotalDiasDisponibles ?? 20)</span></div>
+				</div>
+
+				<div class="periods-grid" id="periodsContainer">
+					@{
+						int periodoIndex = 1;
+						int periodosLlenos = 0;
+
+						foreach (var item in Model.ListaDeVacacionesPorPeriodo)
+						{
+							<div class="period-card locked" data-period="@periodoIndex" id="periodCard@(periodoIndex)">
+								<div class="period-badge">@periodoIndex</div>
+								<span class="status-indicator status-approved">Enviado</span>
+								<i class="fas fa-calendar-check"></i>
+								<div class="period-title">Periodo @periodoIndex</div>
+								<div class="period-dates">@item.FechaInicio.ToString("dd/MM/yyyy") - @item.FechaFin.ToString("dd/MM/yyyy")</div>
+								<div class="period-days">@item.TotalHabil días hábiles</div>
+								<div class="period-replacement" id="replacementText@(periodoIndex)">
+									@(item.PersonaCubre)
+								</div>
+								<div class="period-description">@item.Comentarios</div>
+							</div>
+							periodoIndex++;
+							periodosLlenos++;
+						}
+
+						int siguientePeriodoDisponible = periodosLlenos + 1;
+
+						for (int i = periodoIndex; i <= 4; i++)
+						{
+							string cardClass = "period-card";
+							string status = "Disponible";
+
+							if (i < siguientePeriodoDisponible)
+							{
+								cardClass += " locked";
+								status = "Bloqueado";
+							}
+							else if (i == siguientePeriodoDisponible)
+							{
+								cardClass += " available";
+								status = "Disponible";
+							}
+							else
+							{
+								cardClass += " inactive";
+								status = "No disponible";
+							}
+
+							<div class="@cardClass" data-period="@i" id="periodCard@(i)">
+								<div class="period-badge">@i</div>
+								<span class="status-indicator @(i == siguientePeriodoDisponible ? "status-pending" : "status-disabled")">@status</span>
+								<i class="fas @(i == siguientePeriodoDisponible ? "fa-calendar-plus" : "fa-calendar-times")"></i>
+								<div class="period-title">Periodo @i</div>
+								<div class="period-dates">@(i == siguientePeriodoDisponible ? "Seleccione fechas" : "Complete periodo anterior")</div>
+								<div class="period-days">0 días seleccionados</div>
+								<div class="period-replacement" id="replacementText@(i)" style="display: none;">
+									<!-- Aquí se mostrará la persona asignada -->
+								</div>
+								<div class="period-description">@(i == siguientePeriodoDisponible ? "Mínimo 4 días hábiles" : "Complete el periodo anterior primero")</div>
+							</div>
+						}
+					}
+				</div>
+
+				<div class="calendar-section" id="calendarSection">
+					<div class="calendar-header">
+						<h2>Seleccione sus días</h2>
+						<div class="year-selector">
+							<label for="yearSelect">Año:</label>
+							<select id="yearSelect"></select>
+						</div>
+					</div>
+
+					<div class="calendar-container" id="calendarContainer">
+
+					</div>
+
+					<div class="replacement-section">
+						<div class="replacement-header">
+							<i class="fas fa-user-friends"></i>
+							<h3>Persona que cubrirá durante este periodo</h3>
+						</div>
+						<div class="replacement-content">
+							<label class="replacement-label">Seleccione al personal:</label>
+							<select class="replacement-select" id="replacementSelect" size="5">
+								<option value="">Seleccione persona</option>
+								@foreach (var item in Model.ListaPersonal)
+								{
+									<option value="@item.Id">@(item.RPE) - @item.Nombre</option>
+								}
+
+
+							</select>
+						</div>
+					</div>
+
+					<div class="days-summary">
+						<div class="days-info">
+							<div class="days-count">
+								Días seleccionados: <span id="selectedDays">0</span>
+							</div>
+							<div class="days-count">
+								Días disponibles: <span id="availableDays">@(Model.TotalDiasDisponibles ?? 20)</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="error-message" id="calendarError">
+						Debe seleccionar al menos 4 días hábiles
+					</div>
+
+					<div class="calendar-actions">
+						<a href="#" class="btn btn-cancel" id="cancelBtn">
+							<i class="fas fa-times"></i> Cancelar
+						</a>
+						<button type="button" class="btn btn-save" id="saveBtn">
+							<i class="fas fa-check"></i> Guardar Periodo
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-footer">
+				<a href="~/Personal/Personal" class="btn btn-cancel">
+					<i class="fas fa-times"></i> Cancelar Solicitud
+				</a>
+				<button type="submit" class="btn btn-save" id="submitBtn">
+					<i class="fas fa-paper-plane"></i> Enviar Solicitud
+				</button>
+			</div>
+		</div>
+	</form>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+	
+			let currentDate = new Date();
+			let currentYear = currentDate.getFullYear();
+			let selectedPeriod = null;
+			let rangeStart = null, rangeEnd = null;
+
+		
+			const existingPeriods = @Html.Raw(Json.Serialize(Model.ListaDeVacacionesPorPeriodo));
+
+			const periods = {};
+			let totalDaysUsed = 0;
+			const maxDays = @(Model.TotalDiasDisponibles ?? 20);
+
+
+			if (existingPeriods && existingPeriods.length > 0) {
+				existingPeriods.forEach(period => {
+					if (period && period.numperiodo && period.fechaInicio && period.fechaFin) {
+						const periodoNum = period.numperiodo;
+
+		
+						const fechaInicio = parseDateOnly(period.fechaInicio);
+						const fechaFin = parseDateOnly(period.fechaFin);
+
+
+						const daysSelected = calculateWeekdaysBetween(fechaInicio, fechaFin);
+
+						periods[periodoNum] = {
+							start: fechaInicio,
+							end: fechaFin,
+							days: daysSelected,
+							replacement: period.personaCubre || 'Sin asignar', 
+							status: 'approved'
+						};
+
+						totalDaysUsed += daysSelected;
+
+	
+						updatePeriodCardUI(periodoNum, periods[periodoNum]);
+					}
+				});
+			}
+
+
+			function parseDateOnly(dateString) {
+				if (!dateString) return null;
+
+
+				if (typeof dateString === 'string' && dateString.includes('-')) {
+					const parts = dateString.split('-');
+					if (parts.length === 3) {
+						return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+					}
+				}
+
+
+				if (dateString.year && dateString.month && dateString.day) {
+					return new Date(dateString.year, dateString.month - 1, dateString.day);
+				}
+
+
+				return new Date(dateString);
+			}
+
+
+			const calendarSection = document.getElementById('calendarSection');
+			const calendarContainer = document.getElementById('calendarContainer');
+			const yearSelect = document.getElementById('yearSelect');
+			const remainingDaysElement = document.getElementById('remainingDays');
+			const selectedDaysElement = document.getElementById('selectedDays');
+			const availableDaysElement = document.getElementById('availableDays');
+			const periodsContainer = document.getElementById('periodsContainer');
+			const calendarError = document.getElementById('calendarError');
+			const vacationForm = document.getElementById('vacationForm');
+			const replacementSelect = document.getElementById('replacementSelect');
+
+
+			initApplication();
+
+			function initApplication() {
+
+				remainingDaysElement.textContent = maxDays - totalDaysUsed;
+				availableDaysElement.textContent = maxDays - totalDaysUsed;
+
+
+				setupYearSelector();
+
+
+				setupEventListeners();
+
+
+				renderCalendar(currentYear);
+
+
+				setTimeout(setupPeriodCards, 100);
+			}
+
+			function setupYearSelector() {
+			
+				yearSelect.innerHTML = '';
+
+			
+				for (let i = -1; i <= 2; i++) {
+					const year = currentDate.getFullYear() + i;
+					const option = document.createElement('option');
+					option.value = year;
+					option.textContent = year;
+					if (i === 0) option.selected = true;
+					yearSelect.appendChild(option);
+				}
+
+
+				yearSelect.addEventListener('change', function() {
+					currentYear = parseInt(this.value);
+					renderCalendar(currentYear);
+				});
+			}
+
+			function setupPeriodCards() {
+
+				const periodCards = document.querySelectorAll('.period-card');
+
+				periodCards.forEach(card => {
+					const periodNum = parseInt(card.dataset.period);
+
+
+					card.removeEventListener('click', handlePeriodCardClick);
+
+
+					if (card.classList.contains('available')) {
+						card.addEventListener('click', function() {
+							handlePeriodCardClick(periodNum);
+						});
+					}
+				});
+			}
+
+			function handlePeriodCardClick(periodNum) {
+				// Resetear selección al elegir un nuevo periodo
+				rangeStart = null;
+				rangeEnd = null;
+				selectedPeriod = periodNum;
+
+				document.querySelectorAll('.period-card.available').forEach(c => c.classList.remove('active'));
+				document.getElementById(`periodCard${periodNum}`).classList.add('active');
+
+				calendarSection.style.display = 'block';
+				calendarError.style.display = 'none';
+
+				currentYear = new Date().getFullYear();
+				yearSelect.value = currentYear;
+				renderCalendar(currentYear);
+			}
+
+			function renderCalendar(year) {
+
+				calendarContainer.innerHTML = '';
+
+
+				const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+								  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+
+				for (let month = 0; month < 12; month++) {
+					const monthCalendar = document.createElement('div');
+					monthCalendar.className = 'month-calendar';
+
+					const monthTitle = document.createElement('div');
+					monthTitle.className = 'month-title';
+					monthTitle.textContent = monthNames[month];
+					monthCalendar.appendChild(monthTitle);
+
+					const monthGrid = document.createElement('div');
+					monthGrid.className = 'month-grid';
+
+					const dayHeaders = ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
+					dayHeaders.forEach(day => {
+						const dayHeader = document.createElement('div');
+						dayHeader.className = 'month-day-header';
+						dayHeader.textContent = day;
+						monthGrid.appendChild(dayHeader);
+					});
+
+					const firstDay = new Date(year, month, 1);
+					const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+					let startingDay = firstDay.getDay();
+
+
+					for (let i = 0; i < startingDay; i++) {
+						const emptyDay = document.createElement('div');
+						emptyDay.className = 'month-day';
+						monthGrid.appendChild(emptyDay);
+					}
+
+
+					const today = new Date();
+					today.setHours(0, 0, 0, 0);
+
+					for (let day = 1; day <= daysInMonth; day++) {
+						const dayElement = document.createElement('div');
+						const currentDate = new Date(year, month, day);
+						const dayOfWeek = currentDate.getDay();
+
+						dayElement.className = 'month-day';
+						dayElement.textContent = day;
+						dayElement.dataset.date = currentDate.toISOString().split('T')[0];
+
+
+						if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+							dayElement.classList.add('today');
+						}
+
+
+						if (currentDate < today) {
+							dayElement.classList.add('disabled');
+						}
+
+						let isInExistingPeriod = false;
+						for (const [periodNum, periodData] of Object.entries(periods)) {
+							if (periodData && periodData.start && periodData.end) {
+
+								if (isSameDay(currentDate, periodData.start) ||
+									isSameDay(currentDate, periodData.end) ||
+									(currentDate > periodData.start && currentDate < periodData.end)) {
+
+									dayElement.classList.add(`period-${periodNum}`);
+									isInExistingPeriod = true;
+
+
+									if (periodData.status === 'approved' || periodData.status === 'pending') {
+										dayElement.classList.add('disabled');
+									}
+								}
+							}
+						}
+
+
+						if (dayOfWeek === 0 || dayOfWeek === 6) {
+							dayElement.classList.add('weekend');
+							dayElement.classList.add('disabled');
+						}
+
+
+						if (dayOfWeek !== 0 && dayOfWeek !== 6 &&
+							!isInExistingPeriod &&
+							currentDate >= today) {
+
+							dayElement.addEventListener('click', function() {
+								handleDayClick(currentDate);
+							});
+						} else {
+							// Si no es seleccionable, asegurarse de que esté deshabilitado
+							dayElement.classList.add('disabled');
+						}
+
+						// Resaltar rango de selección actual
+						if (rangeStart && rangeEnd) {
+							if (currentDate >= rangeStart && currentDate <= rangeEnd) {
+								if (dayOfWeek !== 0 && dayOfWeek !== 6 && !isInExistingPeriod && currentDate >= today) {
+									dayElement.classList.add('in-range');
+
+									if (isSameDay(currentDate, rangeStart)) {
+										dayElement.classList.add('range-start');
+									}
+									if (isSameDay(currentDate, rangeEnd)) {
+										dayElement.classList.add('range-end');
+									}
+								}
+							}
+						} else if (rangeStart && isSameDay(currentDate, rangeStart)) {
+							dayElement.classList.add('selected');
+						}
+
+						monthGrid.appendChild(dayElement);
+					}
+
+					monthCalendar.appendChild(monthGrid);
+					calendarContainer.appendChild(monthCalendar);
+				}
+			}
+
+			function isSameDay(date1, date2) {
+				if (!date1 || !date2) return false;
+				return date1.getFullYear() === date2.getFullYear() &&
+					   date1.getMonth() === date2.getMonth() &&
+					   date1.getDate() === date2.getDate();
+			}
+
+			function handleDayClick(date) {
+				if (!rangeStart || (rangeStart && rangeEnd)) {
+
+					rangeStart = new Date(date);
+					rangeEnd = null;
+					selectedDaysElement.textContent = '0';
+					calendarError.style.display = 'none';
+				} else if (date >= rangeStart) {
+		
+					rangeEnd = new Date(date);
+
+			
+					const daysSelected = calculateWeekdaysBetween(rangeStart, rangeEnd);
+					selectedDaysElement.textContent = daysSelected;
+				} else {
+			
+					rangeEnd = rangeStart;
+					rangeStart = new Date(date);
+					const daysSelected = calculateWeekdaysBetween(rangeStart, rangeEnd);
+					selectedDaysElement.textContent = daysSelected;
+				}
+
+				// Volver a renderizar para mostrar la selección
+				renderCalendar(currentYear);
+			}
+
+			function calculateWeekdaysBetween(startDate, endDate) {
+				let count = 0;
+				const current = new Date(startDate);
+				current.setHours(0, 0, 0, 0);
+				const end = new Date(endDate);
+				end.setHours(0, 0, 0, 0);
+
+				while (current <= end) {
+					const day = current.getDay();
+					if (day !== 0 && day !== 6) {
+						count++;
+					}
+					current.setDate(current.getDate() + 1);
+				}
+
+				return count;
+			}
+
+			function formatDate(date) {
+				if (!date) return '';
+				return date.toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' });
+			}
+
+			function formatDateForInput(date) {
+				if (!date) return '';
+				const d = new Date(date);
+				const year = d.getFullYear();
+				const month = String(d.getMonth() + 1).padStart(2, '0');
+				const day = String(d.getDate()).padStart(2, '0');
+				return `${year}-${month}-${day}`;
+			}
+
+			function updateHiddenFields() {
+				let totalDias = 0;
+
+				for (let i = 1; i <= 4; i++) {
+					const period = periods[i];
+					if (period && period.start && period.end) {
+						document.getElementById(`fechaInicio${i}`).value = formatDateForInput(period.start);
+						document.getElementById(`fechaFin${i}`).value = formatDateForInput(period.end);
+						// AÑADIDO: Guardar el nombre de la persona que cubre
+						if (period.replacement) {
+							document.getElementById(`nombrecubre${i}`).value = period.replacement;
+						}
+						totalDias += period.days || 0;
+					} else {
+						document.getElementById(`fechaInicio${i}`).value = '';
+						document.getElementById(`fechaFin${i}`).value = '';
+						document.getElementById(`nombrecubre${i}`).value = '';
+					}
+				}
+
+				document.getElementById('totalDias').value = totalDias;
+			}
+
+			function updatePeriodCardUI(periodNum, periodData) {
+				const card = document.getElementById(`periodCard${periodNum}`);
+				if (!card) return;
+
+				// Actualizar la UI de la tarjeta según el estado del periodo
+				if (periodData && periodData.status) {
+					const statusIndicator = card.querySelector('.status-indicator');
+					const icon = card.querySelector('i');
+					const dates = card.querySelector('.period-dates');
+					const days = card.querySelector('.period-days');
+					const replacementElement = document.getElementById(`replacementText${periodNum}`);
+					const description = card.querySelector('.period-description');
+
+					if (statusIndicator) {
+						statusIndicator.textContent = periodData.status === 'approved' ? 'Aprobado' : 'Pendiente';
+						statusIndicator.className = 'status-indicator ' +
+							(periodData.status === 'approved' ? 'status-approved' : 'status-pending');
+					}
+
+					if (icon) {
+						icon.className = 'fas fa-calendar-check';
+					}
+
+					if (dates && periodData.start && periodData.end) {
+						dates.textContent = `${formatDate(periodData.start)} - ${formatDate(periodData.end)}`;
+					}
+
+					if (days && periodData.days) {
+						days.textContent = `${periodData.days} días hábiles`;
+					}
+
+					// AÑADIDO: Mostrar la persona que cubre
+					if (replacementElement && periodData.replacement) {
+						replacementElement.textContent = periodData.replacement;
+						replacementElement.style.display = 'block';
+					}
+
+					if (description) {
+						description.textContent = periodData.status === 'approved' ?
+							(periodData.comments || 'Periodo aprobado') : 'Esperando aprobación';
+					}
+
+					// Cambiar la clase para que ya no sea editable
+					card.classList.remove('available');
+					card.classList.remove('active');
+					card.classList.add('locked');
+
+					// Remover el event listener para que no se pueda editar
+					card.removeEventListener('click', handlePeriodCardClick);
+				}
+			}
+
+			function enableNextPeriod(currentPeriod) {
+				if (currentPeriod < 4) {
+					const nextPeriodCard = document.getElementById(`periodCard${currentPeriod + 1}`);
+					if (nextPeriodCard && nextPeriodCard.classList.contains('inactive')) {
+						nextPeriodCard.classList.remove('inactive');
+						nextPeriodCard.classList.add('available');
+
+						const statusIndicator = nextPeriodCard.querySelector('.status-indicator');
+						if (statusIndicator) {
+							statusIndicator.textContent = 'Disponible';
+							statusIndicator.className = 'status-indicator status-pending';
+						}
+
+						const icon = nextPeriodCard.querySelector('i');
+						if (icon) {
+							icon.className = 'fas fa-calendar-plus';
+						}
+
+						const dates = nextPeriodCard.querySelector('.period-dates');
+						if (dates) {
+							dates.textContent = 'Seleccione fechas';
+						}
+
+						const description = nextPeriodCard.querySelector('.period-description');
+						if (description) {
+							description.textContent = 'Mínimo 4 días hábiles';
+						}
+
+						// Agregar event listener al nuevo periodo disponible
+						nextPeriodCard.addEventListener('click', function() {
+							handlePeriodCardClick(currentPeriod + 1);
+						});
+					}
+				}
+			}
+
+			function setupEventListeners() {
+		
+				setTimeout(setupPeriodCards, 100);
+
+				// Cancelar selección
+				document.getElementById('cancelBtn').addEventListener('click', function(e) {
+					e.preventDefault();
+					calendarSection.style.display = 'none';
+					rangeStart = null;
+					rangeEnd = null;
+					document.querySelectorAll('.period-card.available').forEach(c => c.classList.remove('active'));
+				});
+
+				document.getElementById('saveBtn').addEventListener('click', function() {
+					const periodNum = parseInt(selectedPeriod);
+
+					if (!rangeStart || !rangeEnd) {
+						calendarError.style.display = 'block';
+						return;
+					}
+
+				
+					let daysSelected = calculateWeekdaysBetween(rangeStart, rangeEnd);
+
+				
+					if (daysSelected < 4) {
+						calendarError.style.display = 'block';
+						return;
+					}
+
+			
+					const selectedReplacement = replacementSelect.value;
+
+		
+					if (!selectedReplacement) {
+						alert('Debe seleccionar una persona que cubrirá durante este periodo');
+						return;
+					}
+
+					const previousDays = periods[periodNum] ? periods[periodNum].days : 0;
+					const netDaysChange = daysSelected - previousDays;
+					const newTotalDays = totalDaysUsed + netDaysChange;
+
+					
+					if (newTotalDays > maxDays) {
+						alert(`No tiene suficientes días disponibles. Días seleccionados: ${daysSelected}, Días disponibles: ${maxDays - totalDaysUsed + previousDays}`);
+						return;
+					}
+
+			
+					totalDaysUsed = newTotalDays;
+
+				
+					periods[periodNum] = {
+						start: new Date(rangeStart),
+						end: new Date(rangeEnd),
+						days: daysSelected,
+						replacement: selectedReplacement, 
+						status: 'pending'
+					};
+
+			
+					remainingDaysElement.textContent = maxDays - totalDaysUsed;
+					availableDaysElement.textContent = maxDays - totalDaysUsed;
+					selectedDaysElement.textContent = '0';
+
+
+					updateHiddenFields();
+
+	
+					updatePeriodCardUI(periodNum, periods[periodNum]);
+
+		
+					enableNextPeriod(periodNum);
+
+			
+					calendarSection.style.display = 'none';
+					rangeStart = null;
+					rangeEnd = null;
+
+					replacementSelect.selectedIndex = 0;
+
+			
+					setupPeriodCards();
+				});
+
+	
+
+
+
+				vacationForm.addEventListener('submit', function(e) {
+		
+					let hasPeriods = false;
+					for (let i = 1; i <= 4; i++) {
+						if (periods[i] && periods[i].status === 'pending') {
+							hasPeriods = true;
+							break;
+						}
+					}
+
+					if (!hasPeriods) {
+						e.preventDefault();
+						alert('Debe programar al menos un periodo de vacaciones');
+						return;
+					}
+
+			
+					updateHiddenFields();
+				});
+			}
+		});
+	</script>
+</body>
+</html>

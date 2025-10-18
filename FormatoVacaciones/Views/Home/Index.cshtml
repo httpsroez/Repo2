@@ -1,0 +1,915 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    //Layout = "~/Views/Shared/LayoutEstatico.cshtml";
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Vacaciones CFE | Portal Empleados</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        
+        :root {
+            --primary: #006341; 
+            --primary-dark: #004C33; 
+            --primary-light: #4D8C72; 
+            --secondary: #FFD100; /* Amarillo CFE para contrastes */
+            --light: #FFFFFF;
+            --dark: #222222;
+            --gray: #6C757D;
+            --light-gray: #F8F9FA;
+            --border-radius: 8px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+    
+        header {
+            background-color: var(--light);
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        /* LOGO CENTRADO */
+        .logo {
+            position: relative;
+            left: 0;
+            margin-left: -80px;
+            transform: none;
+        }
+
+            .logo img {
+                height: 50px;
+                transition: var(--transition);
+            }
+
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.2rem;
+            white-space: nowrap;
+        }
+
+      
+        nav.central-nav {
+            margin-left: auto;
+            margin-right: 255px;
+        }
+
+            nav.central-nav ul {
+                display: flex;
+                list-style: none;
+                gap: 1.5rem;
+            }
+
+                nav.central-nav ul li a {
+                    color: var(--dark);
+                    text-decoration: none;
+                    font-family: 'Montserrat', sans-serif;
+                    font-weight: 500;
+                    font-size: 1rem;
+                    transition: var(--transition);
+                    padding: 0.5rem 0;
+                    position: relative;
+                }
+
+                    nav.central-nav ul li a:after {
+                        content: '';
+                        position: absolute;
+                        width: 0;
+                        height: 2px;
+                        bottom: 0;
+                        left: 0;
+                        background-color: var(--primary);
+                        transition: var(--transition);
+                    }
+
+                    nav.central-nav ul li a:hover {
+                        color: var(--primary);
+                    }
+
+                        nav.central-nav ul li a:hover:after {
+                            width: 100%;
+                        }
+
+        /* BOTÓN MEJORADO */
+        .login-btn {
+            background-color: var(--primary);
+            color: var(--light);
+            border: none;
+            padding: 0.8rem 2rem;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 99, 65, 0.2);
+            display: flex;
+            margin-right: -80px;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .login-btn:hover {
+                background-color: var(--primary-dark);
+                box-shadow: 0 6px 12px rgba(0, 76, 51, 0.2);
+                transform: translateY(-2px);
+            }
+
+        /* CARRUSEL PROFESIONAL CON AUTO AVANCE */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 480px;
+            overflow: hidden;
+        }
+
+        .carousel-inner {
+            display: flex;
+            width: 300%;
+            height: 100%;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .carousel-slide {
+            width: 33.333%;
+            height: 100%;
+            position: relative;
+        }
+
+            .carousel-slide img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                filter: brightness(0.8);
+            }
+
+        .slide-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 3rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            color: white;
+        }
+
+            .slide-content h2 {
+                font-size: 2.2rem;
+                margin-bottom: 1rem;
+                font-weight: 700;
+            }
+
+            .slide-content p {
+                max-width: 600px;
+                font-size: 1.1rem;
+                opacity: 0.9;
+            }
+
+        .carousel-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .control-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+            .control-dot.active {
+                background-color: white;
+                transform: scale(1.2);
+                border-color: var(--primary);
+            }
+
+        /* HERO SECTION MEJORADO */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--light);
+            text-align: center;
+            padding: 6rem 0;
+            margin: 4rem auto;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+            max-width: 1400px;
+            width: calc(100% - 40px);
+        }
+
+            .hero:before {
+                content: '';
+                position: absolute;
+                top: -50px;
+                right: -50px;
+                width: 200px;
+                height: 200px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+            }
+
+            .hero:after {
+                content: '';
+                position: absolute;
+                bottom: -80px;
+                left: -80px;
+                width: 300px;
+                height: 300px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 50%;
+            }
+
+            .hero h2 {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 2.8rem;
+                margin-bottom: 1.5rem;
+                color: var(--light);
+                position: relative;
+                z-index: 2;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+                max-width: 700px;
+                margin: 0 auto 3rem;
+                color: rgba(255, 255, 255, 0.9);
+                position: relative;
+                z-index: 2;
+            }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--light);
+            color: var(--primary);
+            padding: 1rem 2.5rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 2;
+            border: none;
+            cursor: pointer;
+        }
+
+            .btn:hover {
+                background-color: var(--light);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+                color: var(--primary-dark);
+            }
+
+        /* FEATURES SECTION MEJORADO */
+        .features {
+            padding: 5rem 0;
+            background-color: var(--light);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+            .section-header h3 {
+                font-family: 'Montserrat', sans-serif;
+                color: var(--primary);
+                font-size: 2rem;
+                margin-bottom: 1rem;
+                position: relative;
+                display: inline-block;
+            }
+
+                .section-header h3:after {
+                    content: '';
+                    position: absolute;
+                    width: 50px;
+                    height: 3px;
+                    background-color: var(--secondary);
+                    bottom: -10px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                }
+
+            .section-header p {
+                color: var(--gray);
+                max-width: 700px;
+                margin: 0 auto;
+                font-size: 1.1rem;
+            }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            background: var(--light);
+            padding: 2.5rem 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+            .feature-card:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 5px;
+                background-color: var(--primary);
+                transition: var(--transition);
+            }
+
+            .feature-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            }
+
+                .feature-card:hover:before {
+                    height: 10px;
+                    background-color: var(--secondary);
+                }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            color: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        .feature-card h4 {
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        /* FOOTER MEJORADO */
+        footer {
+            background-color: var(--dark);
+            color: var(--light);
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-logo {
+            margin-bottom: 1.5rem;
+        }
+
+            .footer-logo img {
+                height: 40px;
+            }
+
+        .footer-about p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+            .social-links a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                background-color: rgba(255, 255, 255, 0.1);
+                color: var(--light);
+                transition: var(--transition);
+            }
+
+                .social-links a:hover {
+                    background-color: var(--primary);
+                    transform: translateY(-3px);
+                }
+
+        .footer-links h5 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--light);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+            .footer-links h5:after {
+                content: '';
+                position: absolute;
+                width: 30px;
+                height: 2px;
+                background-color: var(--secondary);
+                bottom: 0;
+                left: 0;
+            }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+            .footer-links ul li {
+                margin-bottom: 0.8rem;
+            }
+
+                .footer-links ul li a {
+                    color: rgba(255, 255, 255, 0.7);
+                    text-decoration: none;
+                    transition: var(--transition);
+                    font-size: 0.9rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
+                    .footer-links ul li a:hover {
+                        color: var(--primary);
+                        padding-left: 5px;
+                    }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .footer-bottom p {
+                color: rgba(255, 255, 255, 0.5);
+                font-size: 0.8rem;
+            }
+
+        /* RESPONSIVE DESIGN MEJORADO */
+        media (max-width: 1200px) {
+            .logo
+
+        {
+            position: static;
+            transform: none;
+        }
+
+        .header-container {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        nav.central-nav {
+            margin: 0;
+            order: 3;
+            width: 100%;
+        }
+
+            nav.central-nav ul {
+                justify-content: center;
+            }
+
+        }
+
+        media (max-width: 992px) {
+            .hero h2
+
+        {
+            font-size: 2.2rem;
+        }
+
+        .carousel {
+            height: 500px;
+        }
+
+        }
+
+        media (max-width: 768px) {
+            .hero
+
+        {
+            padding: 4rem 0;
+            margin: 2rem auto;
+            width: calc(100% - 20px);
+        }
+
+        .hero h2 {
+            font-size: 1.8rem;
+        }
+
+        .carousel {
+            height: 400px;
+        }
+
+        .slide-content {
+            padding: 1.5rem;
+        }
+
+            .slide-content h2 {
+                font-size: 1.5rem;
+            }
+
+        }
+
+        media (max-width: 576px) {
+            .features-grid
+
+        {
+            grid-template-columns: 1fr;
+        }
+
+        .footer-content {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .footer-links h5:after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .footer-links ul li a {
+            justify-content: center;
+        }
+
+        .social-links {
+            justify-content: center;
+        }
+
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container header-container">
+
+            <div class="logo">
+                <img src="~/NewFolder/cfe.png" alt="Logo CFE">
+            </div>
+
+
+            <nav class="central-nav">
+                <ul>
+                    <li><a href="#"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="#"><i class="fas fa-file-alt"></i> Políticas</a></li>
+                    <li><a href="#"><i class="fas fa-calendar-alt"></i> Calendario</a></li>
+                    <li><a href="#"><i class="fas fa-envelope"></i> Contacto</a></li>
+                </ul>
+            </nav>
+
+            <a href="~/Account/Login" class="login-btn">
+
+                <i class="fas fa-sign-in-alt"></i>
+                Iniciar Sesión
+
+
+
+            </a>
+
+
+        </div>
+    </header>
+
+
+    <div class="carousel-container">
+        <div class="carousel">
+            <div class="carousel-inner">
+
+                <div class="carousel-slide">
+                    <img src="~/Imagenes/1.PNG" alt="Empleados CFE">
+                    <div class="slide-content">
+                        <h2>Gestión de Vacaciones Intuitiva</h2>
+                        <p>Solicita y administra tus días de descanso de manera sencilla y eficiente.</p>
+                    </div>
+                </div>
+
+
+                <div class="carousel-slide">
+                    <img src="~/Imagenes/2.PNG" alt="Oficinas CFE">
+                    <div class="slide-content">
+                        <h2>Consulta tu Balance Anual</h2>
+                        <p>Revisa en tiempo real los días disponibles y tu historial de vacaciones.</p>
+                    </div>
+                </div>
+
+
+                <div class="carousel-slide">
+                    <img src="https://images.unsplash.com/photo-1573166574006-17f38a701f1c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1400&q=80" alt="Equipo CFE">
+                    <div class="slide-content">
+                        <h2>Políticas Claras y Accesibles</h2>
+                        <p>Conoce todos los detalles sobre el proceso de solicitud y aprobación.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controles del carrusel -->
+            <div class="carousel-controls">
+                <div class="control-dot active" onclick="goToSlide(0)"></div>
+                <div class="control-dot" onclick="goToSlide(1)"></div>
+                <div class="control-dot" onclick="goToSlide(2)"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO SECTION MEJORADO -->
+    <section class="hero">
+        <div class="container">
+            <h2>Sistema Integral de Gestión de Vacaciones</h2>
+            <p>Optimiza tu tiempo y planifica tus periodos de descanso con nuestra plataforma diseñada exclusivamente para empleados CFE.</p>
+            <button class="btn">
+                <i class="fas fa-calendar-plus"></i>
+                Solicitar Vacaciones
+            </button>
+        </div>
+    </section>
+
+    <!-- FEATURES SECTION MEJORADO -->
+    <section class="features">
+        <div class="container">
+            <div class="section-header">
+                <h3>Beneficios del Sistema</h3>
+                <p>Una plataforma diseñada para simplificar la gestión de tus días de descanso mientras cumple con todas las normativas institucionales.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h4>Solicitud en Línea</h4>
+                    <p>Envía tus solicitudes en minutos desde cualquier dispositivo con acceso a internet, sin papeleos.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h4>Dashboard Personal</h4>
+                    <p>Visualiza tu balance de días disponibles, historial y solicitudes pendientes en un vistazo.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h4>Notificaciones Automáticas</h4>
+                    <p>Recibe alertas sobre el estado de tus solicitudes y recordatorios importantes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h4>Documentación Digital</h4>
+                    <p>Accede a tus comprobantes y documentos autorizados en cualquier momento.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h4>Seguridad Garantizada</h4>
+                    <p>Sistema protegido con autenticación de dos factores y cifrado de extremo a extremo.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h4>Soporte 24/7</h4>
+                    <p>Nuestro equipo de RRHH está disponible para resolver cualquier duda o inconveniente.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER MEJORADO -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/CFE_logo.svg/1200px-CFE_logo.svg.png" alt="CFE Logo">
+                    </div>
+                    <p>Sistema de Gestión de Vacaciones para empleados de la Comisión Federal de Electricidad.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <h5>Enlaces Rápidos</h5>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Inicio</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Solicitar Vacaciones</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Mi Balance</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Historial</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Calendario</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h5>Políticas</h5>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Normativa de Vacaciones</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Periodos Restrictivos</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Derechos y Obligaciones</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Preguntas Frecuentes</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Manual de Usuario</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h5>Contacto</h5>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-phone-alt"></i> (55) 1234 5678</a></li>
+                        <li><a href="#"><i class="fas fa-envelope"></i> vacaciones@cfe.mx</a></li>
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Av. Reforma 164, CDMX</a></li>
+                        <li><a href="#"><i class="fas fa-clock"></i> L-V: 8:00 - 18:00</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Comisión Federal de Electricidad. Todos los derechos reservados. | <a href="#">Aviso de Privacidad</a> | <a href="#">Términos y Condiciones</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Script mejorado para el carrusel automático
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.control-dot');
+        const totalSlides = slides.length;
+        let slideInterval;
+        let isPaused = false;
+
+        function updateCarousel() {
+            const carouselInner = document.querySelector('.carousel-inner');
+            carouselInner.style.transform = `translateX(-${currentSlide * 33.333}%)`;
+
+            // Actualizar puntos de control
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            if (!isPaused) {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                updateCarousel();
+            }
+        }
+
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            updateCarousel();
+            resetInterval();
+        }
+
+        function resetInterval() {
+            clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+
+        // Iniciar carrusel automático con pausa al interactuar
+        function startCarousel() {
+            slideInterval = setInterval(nextSlide, 5000);
+
+            const carousel = document.querySelector('.carousel');
+
+            // Pausar al hacer hover o tocar
+            carousel.addEventListener('mouseenter', () => {
+                isPaused = true;
+            });
+
+            carousel.addEventListener('mouseleave', () => {
+                isPaused = false;
+                resetInterval();
+            });
+
+            // Para dispositivos táctiles
+            carousel.addEventListener('touchstart', () => {
+                isPaused = true;
+                clearInterval(slideInterval);
+            });
+
+            carousel.addEventListener('touchend', () => {
+                isPaused = false;
+                resetInterval();
+            });
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCarousel();
+            startCarousel();
+
+            // Efecto smooth para los enlaces
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Añadir clase active al hacer scroll
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('header');
+                if (window.scrollY > 50) {
+                    header.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                } else {
+                    header.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.05)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

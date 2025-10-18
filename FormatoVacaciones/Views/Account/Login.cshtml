@@ -1,0 +1,144 @@
+﻿@model FormatoVacaciones.Models.Entities.Usuario
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar sesión - Programa de Vacaciones</title>
+    <style>
+        html, body {
+            padding: 0px;
+            margin: 0px;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #1B1B1B;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            width: 50%;
+            height: 50%;
+            text-align: center;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .column1 {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .column1 img {
+                height: 20%
+            }
+
+            .column1 h5 {
+                color: #008E5A;
+            }
+
+        .column2 {
+            width: 60%;
+            height: 80%;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            justify-content: center;
+            align-items: center;
+            border-left: .5px solid #CECECE;
+            padding: 10px;
+            margin: auto;
+        }
+
+
+        .login-container h3 {
+            color: #008E5A;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .login-container label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            width: 80%;
+            padding: 7px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-family: inherit;
+        }
+
+        .login-container button {
+            background-color: white;
+            color: #008E5A;
+            padding: 7px;
+            width: 80%;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+            .login-container button:hover {
+                background-color: #008E5A;
+                color: white;
+                font-weight: bold;
+            }
+
+        .login-container .validation-errors {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="column1">
+            <img src="~/NewFolder/logo.png" alt="Logo de CFE" />
+            <h5>Programa de Vacaciones</h5>
+        </div>
+
+
+
+        <div class="column2">
+            <h3>Iniciar Sesión</h3>
+            <form method="post" action="~/Account/Login">
+
+                <input asp-for="RpRt" type="text" id="rprt" name="rprt" placeholder="RP/RT" required />
+
+                <input asp-for="Password" type="password" id="password" name="password" placeholder="Contraseña" required />
+
+                <button type="submit">Entrar</button>
+
+                <div class="validation-errors">
+                    @Html.ValidationSummary()
+                </div>
+            </form>
+        </div>
+
+    </div>
+</body>
+</html>

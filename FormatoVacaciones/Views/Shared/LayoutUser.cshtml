@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Minimalista</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Aptos Narrow', sans-serif;
+        }
+
+        .minimal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 10%; /* Más espacio vertical y margen horizontal del 10% */
+            background-color: white;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            max-width: 1400px; /* Ancho máximo para contenido */
+            margin: 0 auto; /* Centrado horizontal */
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .header-logos {
+            display: flex;
+            align-items: center;
+            gap: 30px; /* Más espacio entre logos */
+        }
+
+        .header-logo {
+            height: 40px; /* Logo más grande */
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-options {
+            display: flex;
+            align-items: center;
+            gap: 30px; /* Más espacio entre opciones */
+        }
+
+        .header-option {
+            color: #333;
+            text-decoration: none;
+            font-size: 16px; /* Texto más grande */
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: color 0.2s;
+            padding: 8px 12px; /* Más espacio alrededor del texto */
+        }
+
+            .header-option:hover {
+                color: #666;
+            }
+
+        .main-content {
+            max-width: 1400px; /* Igual que el header */
+            margin: 0 auto; /* Centrado */
+            padding: 0 10%; /* Mismo margen horizontal que el header */
+        }
+    </style>
+</head>
+<body>
+    <header class="minimal-header">
+        <div class="header-content">
+            <div class="header-logos">
+                <img src="~/NewFolder/cfe.png" alt="Logo CFE" class="header-logo">
+            </div>
+            <nav class="header-options">
+                <a href="~/Personal/ProgramarVacaciones" class="header-option">Solicitar vacaciones</a>
+                <a href="#" class="header-option">Periodos de vacaciones</a>
+                <a href="#" class="header-option">Servicios</a>
+            </nav>
+        </div>
+    </header>
+    <div class="main-content">
+        @RenderBody()
+    </div>
+</body>
+</html>

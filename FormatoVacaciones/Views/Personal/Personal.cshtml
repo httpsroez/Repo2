@@ -1,0 +1,874 @@
+﻿@model FormatoVacaciones.Models.ViewModels.DatosPersonal
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Mi Portal de Vacaciones | CFE</title>
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<style>
+		/* RESET & VARIABLES - COLORES CFE OFICIALES */
+		:root {
+			--primary: #006341; /* Verde CFE oficial */
+			--primary-dark: #004C33; /* Verde CFE oscuro */
+			--primary-light: #4D8C72; /* Verde CFE claro */
+			--secondary: #FFD100; /* Amarillo CFE para contrastes */
+			--light: #FFFFFF;
+			--dark: #222222;
+			--gray: #6C757D;
+			--light-gray: #F8F9FA;
+			--border-radius: 8px;
+			--box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+			--transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: 'Open Sans', sans-serif;
+			background-color: #f5f7fa;
+			color: var(--dark);
+			line-height: 1.7;
+			-webkit-font-smoothing: antialiased;
+		}
+
+		.container {
+			width: 100%;
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 20px;
+		}
+
+		/* HEADER MEJORADO */
+		header {
+			background-color: var(--light);
+			padding: 1rem 0;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+			position: sticky;
+			top: 0;
+			z-index: 1000;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+		}
+
+		.header-container {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			position: relative;
+		}
+
+		/* LOGO CENTRADO */
+		.logo {
+			position: relative;
+			left: 0;
+			margin-left: 15px;
+			transform: none;
+		}
+
+			.logo img {
+				height: 50px;
+				transition: var(--transition);
+			}
+
+		.logo-text {
+			font-family: 'Montserrat', sans-serif;
+			font-weight: 700;
+			color: var(--primary);
+			font-size: 1.2rem;
+			white-space: nowrap;
+		}
+
+		/* NAV MEJORADO */
+		nav.central-nav {
+			margin-left: auto;
+			margin-right: 305px;
+		}
+
+			nav.central-nav ul {
+				display: flex;
+				list-style: none;
+				gap: 1.5rem;
+			}
+
+				nav.central-nav ul li a {
+					color: var(--dark);
+					text-decoration: none;
+					font-family: 'Montserrat', sans-serif;
+					font-weight: 500;
+					font-size: 1rem;
+					transition: var(--transition);
+					padding: 0.5rem 0;
+					position: relative;
+				}
+
+					nav.central-nav ul li a:after {
+						content: '';
+						position: absolute;
+						width: 0;
+						height: 2px;
+						bottom: 0;
+						left: 0;
+						background-color: var(--primary);
+						transition: var(--transition);
+					}
+
+					nav.central-nav ul li a:hover {
+						color: var(--primary);
+					}
+
+						nav.central-nav ul li a:hover:after {
+							width: 100%;
+						}
+
+		/* BOTÓN MEJORADO */
+		.user-menu {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+		}
+
+		.user-avatar {
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			background-color: var(--primary-light);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: var(--light);
+			font-weight: bold;
+			margin-left: -55px;
+			cursor: pointer;
+		}
+
+		/* PANEL DE USUARIO */
+		.dashboard {
+			padding: 2rem 0;
+		}
+
+		.welcome-banner {
+			background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+			color: var(--light);
+			padding: 2rem;
+			border-radius: var(--border-radius);
+			margin-bottom: 2rem;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.welcome-text h1 {
+			font-family: 'Montserrat', sans-serif;
+			font-size: 1.8rem;
+			margin-bottom: 0.5rem;
+		}
+
+		.welcome-text p {
+			opacity: 0.9;
+		}
+
+		.quick-actions {
+			display: flex;
+			gap: 1rem;
+		}
+
+		.quick-btn {
+			background-color: var(--light);
+			color: var(--primary);
+			border: none;
+			text-decoration: none;
+			padding: 0.8rem 1.5rem;
+			border-radius: var(--border-radius);
+			font-family: 'Montserrat', sans-serif;
+			font-weight: 600;
+			cursor: pointer;
+			transition: var(--transition);
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+
+			.quick-btn:hover {
+				background-color: var(--light-gray);
+				transform: translateY(-2px);
+			}
+
+		/* ESTADÍSTICAS RÁPIDAS */
+		.stats-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: 1.5rem;
+			margin-bottom: 2rem;
+		}
+
+		.stat-card {
+			background: var(--light);
+			padding: 1.5rem;
+			border-radius: var(--border-radius);
+			box-shadow: var(--box-shadow);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+		}
+
+		.stat-icon {
+			font-size: 2rem;
+			color: var(--primary);
+			margin-bottom: 1rem;
+		}
+
+		.stat-value {
+			font-family: 'Montserrat', sans-serif;
+			font-size: 2rem;
+			font-weight: 700;
+			color: var(--primary);
+			margin-bottom: 0.5rem;
+		}
+
+		.stat-label {
+			color: var(--gray);
+			font-size: 0.9rem;
+		}
+
+		.stat-label1 {
+			color: var(--gray);
+			font-size: 0.8rem;
+		}
+
+		/* SECCIÓN DE SOLICITUDES */
+		.requests-section {
+			background: var(--light);
+			padding: 2rem;
+			border-radius: var(--border-radius);
+			box-shadow: var(--box-shadow);
+			margin-bottom: 2rem;
+		}
+
+		.section-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 1.5rem;
+		}
+
+			.section-header h2 {
+				font-family: 'Montserrat', sans-serif;
+				color: var(--primary);
+				font-size: 1.5rem;
+				position: relative;
+			}
+
+				.section-header h2:after {
+					content: '';
+					position: absolute;
+					width: 40px;
+					height: 3px;
+					background-color: var(--secondary);
+					bottom: -10px;
+					left: 0;
+				}
+
+		.new-request-btn {
+			background-color: var(--primary);
+			color: var(--light);
+			border: none;
+			padding: 0.7rem 1.5rem;
+			border-radius: var(--border-radius);
+			text-decoration: none;
+			font-family: 'Montserrat', sans-serif;
+			font-weight: 600;
+			cursor: pointer;
+			transition: var(--transition);
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+
+			.new-request-btn:hover {
+				background-color: var(--primary-dark);
+				transform: translateY(-2px);
+			}
+
+		/* TABLA DE SOLICITUDES */
+		.requests-table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+			.requests-table th {
+				background-color: var(--primary-light);
+				color: var(--light);
+				padding: 1rem;
+				text-align: left;
+				font-family: 'Montserrat', sans-serif;
+				font-weight: 500;
+			}
+
+			.requests-table td {
+				padding: 1rem;
+				border-bottom: 1px solid var(--light-gray);
+			}
+
+		.status-badge {
+			display: inline-block;
+			padding: 0.3rem 0.8rem;
+			border-radius: 20px;
+			font-size: 0.8rem;
+			font-weight: 500;
+		}
+
+		.status-approved {
+			background-color: #E8F5E9;
+			color: #2E7D32;
+		}
+
+		.status-pending {
+			background-color: #FFF8E1;
+			color: #F57F17;
+		}
+
+		.status-rejected {
+			background-color: #FFEBEE;
+			color: #C62828;
+		}
+
+		.action-btn {
+			background: none;
+			border: none;
+			color: var(--primary);
+			cursor: pointer;
+			margin-right: 0.5rem;
+		}
+
+		/* CALENDARIO */
+		.calendar-section {
+			background: var(--light);
+			padding: 2rem;
+			border-radius: var(--border-radius);
+			box-shadow: var(--box-shadow);
+			margin-bottom: 2rem;
+		}
+
+		.calendar-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 1.5rem;
+		}
+
+		.calendar-nav {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+		}
+
+		.calendar-nav-btn {
+			background: none;
+			border: none;
+			color: var(--primary);
+			cursor: pointer;
+			font-size: 1.2rem;
+		}
+
+		.calendar-month {
+			font-family: 'Montserrat', sans-serif;
+			font-size: 1.2rem;
+			font-weight: 500;
+		}
+
+		.calendar-grid {
+			display: grid;
+			grid-template-columns: repeat(7, 1fr);
+			gap: 0.5rem;
+		}
+
+		.calendar-day-header {
+			text-align: center;
+			font-family: 'Montserrat', sans-serif;
+			font-weight: 500;
+			padding: 0.5rem;
+			color: var(--gray);
+		}
+
+		.calendar-day {
+			aspect-ratio: 1;
+			padding: 0.5rem;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			transition: var(--transition);
+			position: relative;
+		}
+
+			.calendar-day:hover {
+				background-color: var(--light-gray);
+			}
+
+			.calendar-day.active {
+				background-color: var(--primary);
+				color: var(--light);
+			}
+
+			.calendar-day.vacation {
+				color: var(--primary);
+				font-weight: bold;
+			}
+
+				.calendar-day.vacation:after {
+					content: '';
+					position: absolute;
+					bottom: 0.2rem;
+					width: 0.5rem;
+					height: 0.5rem;
+					background-color: var(--secondary);
+					border-radius: 50%;
+				}
+
+			.calendar-day.other-month {
+				color: #ccc;
+			}
+
+			.calendar-day.today {
+				border: 2px solid var(--primary);
+			}
+
+		/* RESPONSIVE DESIGN */
+		media (max-width: 992px) {
+			.welcome-banner
+		
+
+		{
+			flex-direction: column;
+			gap: 1.5rem;
+			text-align: center;
+		}
+
+		.quick-actions {
+			justify-content: center;
+			flex-wrap: wrap;
+		}
+
+		}
+
+		media (max-width: 768px) {
+			.header-container
+
+		{
+			flex-wrap: wrap;
+			gap: 1rem;
+		}
+
+		nav.central-nav {
+			margin: 0;
+			order: 3;
+			width: 100%;
+		}
+
+			nav.central-nav ul {
+				justify-content: center;
+				flex-wrap: wrap;
+			}
+
+		.requests-table {
+			display: block;
+			overflow-x: auto;
+		}
+
+		}
+
+		media (max-width: 576px) {
+			.stats-grid
+
+		{
+			grid-template-columns: 1fr;
+		}
+
+		.quick-actions {
+			flex-direction: column;
+			width: 100%;
+		}
+
+		.quick-btn {
+			width: 100%;
+			justify-content: center;
+		}
+
+		.calendar-day.vacation-approved {
+			background-color: var(--primary-light);
+			color: var(--light);
+			font-weight: bold;
+		}
+
+		.calendar-day.vacation-pending {
+			background-color: #FFF8E1;
+			color: #F57F17;
+			font-weight: bold;
+		}
+
+		.calendar-day.vacation-rejected {
+			background-color: #FFEBEE;
+			color: #C62828;
+			font-weight: bold;
+		}
+
+		.calendar-day.vacation-requested {
+			background-color: #E3F2FD;
+			color: #1565C0;
+			font-weight: bold;
+		}
+	</style>
+</head>
+<body>
+	<!-- HEADER -->
+	<header>
+		<div class="container header-container">
+			<div class="logo">
+				<img src="~/NewFolder/cfe.png" alt="Logo CFE">
+			</div>
+
+			<nav class="central-nav">
+				<ul>
+					<li><a href="#"><i class="fas fa-home"></i> Inicio</a></li>
+					<li><a href="#"><i class="fas fa-calendar-alt"></i> Calendario</a></li>
+					<li><a href="#"><i class="fas fa-file-alt"></i> Solicitudes</a></li>
+					<li><a href="#"><i class="fas fa-cog"></i> Configuración</a></li>
+				</ul>
+			</nav>
+
+			<div class="user-menu">
+				<div class="user-avatar">@(Model.PrimeraLetra)@(Model.ApellidoPrimeraLetra)</div>
+			</div>
+		</div>
+	</header>
+
+
+	<main class="dashboard">
+		<div class="container">
+
+			<section class="welcome-banner">
+				<div class="welcome-text">
+					<h1>@Model.Nombre</h1>
+					<p>@Model.NombreDepartamento | Matrícula: CFE-@Model.RpRt</p>
+				</div>
+				<div class="quick-actions">
+					<a href="~/Personal/ProgramarVacaciones" class="quick-btn" id="newRequestBtn">
+						<i class="fas fa-plus"></i> Nueva Solicitud
+					</a>
+					<button class="quick-btn" id="downloadCalendarBtn">
+						<i class="fas fa-download"></i> Descargar Calendario
+					</button>
+				</div>
+			</section>
+
+
+			<section class="stats-grid">
+				<div class="stat-card">
+					<div class="stat-icon">
+						<i class="fas fa-calendar-check"></i>
+					</div>
+					<div class="stat-value">@Model.DiasDisponibles</div>
+					@if (Model.DiasPendt == 0)
+					{
+						<div class="stat-label">Días Disponibles</div>
+					}
+					else
+					{
+						<div class="stat-label">Días Disponibles</div>
+						<div class="stat-label1">@Model.DiasDisponibles</div>
+
+					}
+				</div>
+				<div class="stat-card">
+					<div class="stat-icon">
+						<i class="fas fa-clock"></i>
+					</div>
+					<div class="stat-value">@Model.Periodos</div>
+					<div class="stat-label">Periodos Disponibles</div>
+				</div>
+				<div class="stat-card">
+					<div class="stat-icon">
+						<i class="fas fa-check-circle"></i>
+					</div>
+					<div class="stat-value">@Model.DiasAprov</div>
+					<div class="stat-label">Días Aprobados</div>
+				</div>
+				<div class="stat-card">
+					<div class="stat-icon">
+						<i class="fas fa-calendar-times"></i>
+					</div>
+					<div class="stat-value">@Model.año</div>
+					<div class="stat-label">Periodo Actual</div>
+				</div>
+			</section>
+
+			<!-- SECCIÓN DE SOLICITUDES -->
+			<section class="requests-section">
+				<div class="section-header">
+					<h2>Mis Solicitudes Recientes</h2>
+					<a href="~/Personal/ProgramarVacaciones" class="new-request-btn" id="newRequestBtn2">
+						<i class="fas fa-plus"></i> Nueva Solicitud
+					</a>
+				</div>
+
+				<table class="requests-table">
+					<thead>
+						<tr>
+							<th>Fecha Solicitud</th>
+							<th>Periodo</th>
+							<th>Días</th>
+							<th>Estado</th>
+							<th>Acciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model.listitadevacaciones)
+						{
+							<tr>
+
+								<td>@item.HoySoli</td>
+								<td>@item.FechaInicio - @item.FechaFin</td>
+								<td>
+									@item.dias
+								</td>
+								@if (item.IdEstado == 1)
+								{
+									<td><span class="status-badge status-pending">En revisión</span></td>
+								}
+								else if (item.IdEstado == 2)
+								{
+									<td><span class="status-badge status-pending">En revisión</span></td>
+								}
+								else if (item.IdEstado == 3)
+								{
+									<td><span class="status-badge status-approved">Aprobado</span></td>
+								}
+								else
+								{
+									<td><span class="status-badge status-rejected">Rechazado</span></td>
+								}
+
+								<td>
+									@if (item.IdEstado==3)
+									{
+										<button class="action-btn" title="Descargar">
+											<i class="fas fa-download"></i>
+										</button>
+									}
+									else
+									{
+									<button class="action-btn" title="Cancelar">
+										<i class="fas fa-times"></i>
+									</button>
+									}
+									
+								</td>
+							</tr>
+						}
+
+					</tbody>
+				</table>
+			</section>
+
+			<!-- CALENDARIO -->
+			<section class="calendar-section">
+				<div class="calendar-header">
+					<h2>Calendario de Vacaciones</h2>
+					<div class="calendar-nav">
+						<button class="calendar-nav-btn" id="prevMonth">
+							<i class="fas fa-chevron-left"></i>
+						</button>
+						<div class="calendar-month" id="currentMonth">Julio 2024</div>
+						<button class="calendar-nav-btn" id="nextMonth">
+							<i class="fas fa-chevron-right"></i>
+						</button>
+					</div>
+				</div>
+
+				<div class="calendar-grid" id="calendarGrid">
+
+					<div class="calendar-day-header">Lun</div>
+					<div class="calendar-day-header">Mar</div>
+					<div class="calendar-day-header">Mié</div>
+					<div class="calendar-day-header">Jue</div>
+					<div class="calendar-day-header">Vie</div>
+					<div class="calendar-day-header">Sáb</div>
+					<div class="calendar-day-header">Dom</div>
+				</div>
+			</section>
+		</div>
+	</main>
+
+	<script>
+				document.addEventListener('DOMContentLoaded', function() {
+
+			let currentDate = new Date();
+			let currentMonth = currentDate.getMonth();
+			let currentYear = currentDate.getFullYear();
+
+
+		const vacationRanges = [
+			@{
+						var count = 0;
+						foreach (var item in Model.listitadevacacionesaprovadas)
+						{
+									count++;
+									<text>{
+										start: '@item.FechaInicio.ToString("yyyy-MM-dd")',
+										end: '@item.FechaFin.ToString("yyyy-MM-dd")',
+										dias: @item.dias
+									}</text>
+									if (count < Model.listitadevacacionesaprovadas.Count())
+									{
+												<text>,</text>
+									}
+						}
+			}
+		];
+
+			// Inicializar el calendario
+			renderCalendar(currentMonth, currentYear);
+
+			// Event listeners para navegación del calendario
+			document.getElementById('prevMonth').addEventListener('click', function() {
+				currentMonth--;
+				if (currentMonth < 0) {
+					currentMonth = 11;
+					currentYear--;
+				}
+				renderCalendar(currentMonth, currentYear);
+			});
+
+			document.getElementById('nextMonth').addEventListener('click', function() {
+				currentMonth++;
+				if (currentMonth > 11) {
+					currentMonth = 0;
+					currentYear++;
+				}
+				renderCalendar(currentMonth, currentYear);
+			});
+
+			// Función para verificar si una fecha está en algún rango de vacaciones
+			function isDateInVacationRanges(dateStr) {
+				const date = new Date(dateStr);
+				return vacationRanges.some(range => {
+					const startDate = new Date(range.start);
+					const endDate = new Date(range.end);
+					return date >= startDate && date <= endDate;
+				});
+			}
+
+			// Función para obtener información del rango de vacaciones
+			function getVacationRangeInfo(dateStr) {
+				const date = new Date(dateStr);
+				for (const range of vacationRanges) {
+					const startDate = new Date(range.start);
+					const endDate = new Date(range.end);
+					if (date >= startDate && date <= endDate) {
+						return range;
+					}
+				}
+				return null;
+			}
+
+	
+			function renderCalendar(month, year) {
+				const calendarGrid = document.getElementById('calendarGrid');
+				const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+								   "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+		
+				document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+
+			
+				while (calendarGrid.children.length > 7) {
+					calendarGrid.removeChild(calendarGrid.lastChild);
+				}
+
+				
+				const firstDay = new Date(year, month, 1);
+				const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+				let startingDay = firstDay.getDay();
+			
+				startingDay = startingDay === 0 ? 6 : startingDay - 1;
+
+			
+				for (let i = 0; i < startingDay; i++) {
+					const emptyDay = document.createElement('div');
+					emptyDay.className = 'calendar-day other-month';
+					calendarGrid.appendChild(emptyDay);
+				}
+
+			
+				const today = new Date();
+				for (let day = 1; day <= daysInMonth; day++) {
+					const dayElement = document.createElement('div');
+					dayElement.className = 'calendar-day';
+					dayElement.textContent = day;
+
+					
+					if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+						dayElement.classList.add('today');
+					}
+
+					
+					const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+					if (isDateInVacationRanges(dateStr)) {
+						dayElement.classList.add('vacation');
+
+						
+						const rangeInfo = getVacationRangeInfo(dateStr);
+						if (rangeInfo) {
+							const startDate = new Date(rangeInfo.start).toLocaleDateString();
+							const endDate = new Date(rangeInfo.end).toLocaleDateString();
+							dayElement.title = `Vacaciones aprobadas: ${startDate} - ${endDate} (${rangeInfo.dias} días)`;
+						} else {
+							dayElement.title = 'Vacaciones aprobadas';
+						}
+					}
+
+					// Agregar evento click para mostrar detalles
+					dayElement.addEventListener('click', function() {
+						showDayDetails(dateStr);
+					});
+
+					calendarGrid.appendChild(dayElement);
+				}
+
+				// Calcular el total de celdas (deben ser 42 para una cuadrícula de 6x7)
+				const totalCells = 7 * 6;
+				const existingCells = startingDay + daysInMonth;
+				const remainingCells = totalCells - existingCells;
+
+				
+				for (let i = 0; i < remainingCells; i++) {
+					const emptyDay = document.createElement('div');
+					emptyDay.className = 'calendar-day other-month';
+					calendarGrid.appendChild(emptyDay);
+				}
+			}
+
+
+
+			// También puedes agregar esta función para debug o información
+			function logVacationRanges() {
+				console.log('Rangos de vacaciones aprobadas:');
+				vacationRanges.forEach((range, index) => {
+					console.log(`${index + 1}. ${range.start} - ${range.end} (${range.dias} días)`);
+				});
+			}
+
+			// Ejecutar para verificar en consola
+			logVacationRanges();
+		});
+	</script>
+</body>
+</html>
